@@ -1,12 +1,10 @@
 const UserModel = require("../models/user_model");
-const ImageModel = require("../models/image_model")
 const handlePassword = require("../helpers/handle_password");
 
 var randtoken = require('rand-token')
 var jwt = require("jsonwebtoken");
 const privateKey = process.env.PRIVATE_KEY;
 var refreshTokens = {};
-const upload = require("../helpers/upload_image");
 
 
 var validatePassword = function (password) {
@@ -16,10 +14,16 @@ var validatePassword = function (password) {
 
 const createUser = async (req, res) => {
   try {
-    const { password, ...rest } = req.body;
+    const { password, username, email, ...rest } = req.body;
 
+    const existingUser = await UserModel.findOne({ $or: [{ username: username }, { email: email }] });
     const isPasswordValid = validatePassword(password); // You can use your validatePassword function
 
+    if (existingUser) {
+      return res.status(400).json({
+        error: 'Username or email already exists. Please choose a different one.',
+      });
+    }
     if (!isPasswordValid) {
       return res.status(400).json({
         error: 'Invalid password. Password must contain at least one uppercase character and one number.',
@@ -29,6 +33,8 @@ const createUser = async (req, res) => {
     const hashPassword = await handlePassword.cryptPassword(password);
     const user = await UserModel.create({
       ...rest,
+      username: username,
+      email: email,
       password: hashPassword,
     });
     if (!user) {
@@ -199,34 +205,23 @@ const getUsers = async (req, res) => {
 }
 
 const uploadAvatar = async (req, res) => {
-  console.log('res');
-  upload(req, res, function (err) {
-      if (err) {
-          return res.status(400).json({
-              success: false,
-              error: err
-          })
-      }
-      console.log('req.file: ', req.file);
-      res.status(200).json({
-          success: true,
-          data: {...req.file}
-      })
-  })
-}
-
-const getImage = async (req, res) => {
   try {
-    const result = await ImageModel.findMany();
-    if (!result) {
-      return res.status(404).json('image not found')
-    }
-    res.status(200).json(result)
-  } catch (e) {
-    res.status(500).json({
-      msg: "Error server get images",
-      error: e,
-    });
+    const fileData = req.file
+
+    const userId = req.user._id; // Update this line to match your user identification method
+    // Update the user's avatar field with the URL of the uploaded file
+    const user = await UserModel.findOneAndUpdate(
+      {_id: userId},
+      { avatar: req.file.path }, // Assuming req.file.path contains the URL of the uploaded file
+      { new: true } // This option ensures you get the updated user document
+    );
+
+    res.status(200).json({
+      message:'upload success',
+      url: req.file.path
+    })
+  } catch(error) {
+    res.status(404).json("Image not found")
   }
 }
 
@@ -241,5 +236,4 @@ module.exports = {
   getUsers,
   deleteUser,
   uploadAvatar,
-  getImage
 };

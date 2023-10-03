@@ -32,7 +32,8 @@ const UserSchema = new Schema({
     ],
   },
   avatar: {
-    type: String
+    type: String,
+    default: '0'
   },
   password: {
     type: String,
