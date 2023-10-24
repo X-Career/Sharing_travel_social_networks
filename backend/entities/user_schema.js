@@ -49,6 +49,11 @@ const UserSchema = new Schema({
     type: Object,
     ref: 'milestones'
   },
+  
+  fullname: { type: String, default: 'Unknow' },
+  gender: { type: String, default: 'Unknow' },
+  birthday: { type: String, default: '--/--/----' },
+  description: {type: String, default: 'Empty'}
 });
 
 //mongo config
