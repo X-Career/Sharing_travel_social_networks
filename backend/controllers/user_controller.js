@@ -1,4 +1,6 @@
 const UserModel = require("../models/user_model");
+const CommentModel = require("../models/comment_model")
+const PostModel = require("../models/post_model")
 const handlePassword = require("../helpers/handle_password");
 
 var randtoken = require('rand-token')
@@ -56,8 +58,8 @@ const login = async (req, res) => {
     const dataToken = {
       _id: user._id,
       username: user.username,
-      email: user.email,
       password: user.password,
+      email: user.email,
       role: user.role,
       address: user.address,
       avatar: user.avatar
@@ -69,13 +71,13 @@ const login = async (req, res) => {
       console.log('login success');
       res.status(201).json({
         accessToken: accessToken,
-        refreshToken: refreshToken,
-        msg: "User logged in successfully",
+        // refreshToken: refreshToken,
+        message: "User logged in successfully",
           username: user.username,
           user_id: user._id,
-          email: user.email,
-          phone: user.phone,
-          avatar: user.avatar
+          // email: user.email,
+          // phone: user.phone,
+          // avatar: user.avatar
       });
     }
   } catch (e) {
@@ -115,7 +117,7 @@ const updateUser = async (req, res) => {
       user: user
     });
   } catch (e) {
-    res.status(500).json('Server error');
+    res.status(500).json('update fail');
   }
 };
 
@@ -206,8 +208,6 @@ const getUsers = async (req, res) => {
 
 const uploadAvatar = async (req, res) => {
   try {
-    const fileData = req.file
-
     const userId = req.user._id; // Update this line to match your user identification method
     // Update the user's avatar field with the URL of the uploaded file
     const user = await UserModel.findOneAndUpdate(
@@ -225,9 +225,55 @@ const uploadAvatar = async (req, res) => {
   }
 }
 
+const createComment = async (req, res) => {
+  try {
+    const userId = req.user._id
+    console.log('contenttt',req.body.content);
+    const comment = await CommentModel.create(
+      {
+        user: userId,
+        content: req.body.content
+      }
+    )
+    res.status(200).json({
+      message:'comment sucess',
+      comment: comment
+    })
+  } catch (error) {
+    res.status(400).json("Cannot create comment")
+  }
+}
+
+const createPost = async (req, res) => {
+  try {
+    const userId = req.user._id; 
+    const fileUrls = [];
+
+    // Iterate over the uploaded files and upload them to Cloudinary
+    for (const file of req.files) {
+      fileUrls.push(file.path);
+    }
+    const post = await PostModel.create(
+      {
+        user: userId,
+        content: req.body.content,
+        images: fileUrls
+      } 
+    );
+
+    res.status(200).json({
+      message:'upload success',
+      post: post
+    })
+  } catch (error) {
+    res.status(400).json('cannot create post')
+  }
+}
+
 
 module.exports = {
   createUser,
+  createComment,
   getCurrentUser,
   updateUser,
   updatePassword,
@@ -236,4 +282,5 @@ module.exports = {
   getUsers,
   deleteUser,
   uploadAvatar,
+  createPost,
 };
