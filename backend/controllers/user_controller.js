@@ -60,7 +60,11 @@ const login = async (req, res) => {
       password: user.password,
       role: user.role,
       address: user.address,
-      avatar: user.avatar
+      avatar: user.avatar,
+      fullname: user.fullname,
+      gender: user.gender,
+      birthday: user.birthday,
+      description: user.description,
     };
     if (user) {
       var accessToken = jwt.sign(dataToken, privateKey);
@@ -75,7 +79,11 @@ const login = async (req, res) => {
           user_id: user._id,
           email: user.email,
           phone: user.phone,
-          avatar: user.avatar
+          avatar: user.avatar,
+          fullname: user.fullname,
+          gender: user.gender,
+          birthday: user.birthday,
+          description: user.description,
       });
     }
   } catch (e) {
