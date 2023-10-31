@@ -214,6 +214,23 @@ const getUsers = async (req, res) => {
   }
 }
 
+const getPosts = async (req, res) => {
+  try {
+    const posts = await PostModel.findMany(
+      {},
+      // 3,
+      // 3,
+    );
+    console.log(posts);
+    if (!posts || posts.length == 0) {
+      return res.status(400).json("Post not found");
+    }
+    res.status(200).json(posts);
+  } catch (e) {
+    res.status(500).json("Error server");
+  }
+};
+
 const uploadAvatar = async (req, res) => {
   try {
     const userId = req.user._id; // Update this line to match your user identification method
@@ -255,12 +272,15 @@ const createComment = async (req, res) => {
 const createPost = async (req, res) => {
   try {
     const userId = req.user._id; 
-    const fileUrls = [];
-
+    // const fileUrls = JSON.parse(req.body.imageURIs);
+    // console.log('req.body', fileUrls);
+    const fileUrls = []
+    console.log('req.files', req.files);
     // Iterate over the uploaded files and upload them to Cloudinary
     for (const file of req.files) {
       fileUrls.push(file.path);
     }
+    console.log('fileurl',fileUrls);
     const post = await PostModel.create(
       {
         user: userId,
@@ -288,6 +308,7 @@ module.exports = {
   login,
   getUser,
   getUsers,
+  getPosts,
   deleteUser,
   uploadAvatar,
   createPost,
