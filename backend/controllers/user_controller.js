@@ -272,6 +272,10 @@ const createComment = async (req, res) => {
 const createPost = async (req, res) => {
   try {
     const userId = req.user._id; 
+    const username = req.user.username; 
+    const userAvatar = req.user.avatar; 
+    console.log('avt',req.user);
+    console.log('avtt',typeof(req.user));
     // const fileUrls = JSON.parse(req.body.imageURIs);
     // console.log('req.body', fileUrls);
     const fileUrls = []
@@ -284,10 +288,17 @@ const createPost = async (req, res) => {
     const post = await PostModel.create(
       {
         user: userId,
+        username: username,
+        avatar: userAvatar,
         content: req.body.content,
-        images: fileUrls
+        images: fileUrls,
       } 
     );
+
+    // const populatedPost = await PostModel.findOne({_id: userId}).populate(post, {
+    //   path: 'user',
+    //   select: 'username avatar', // Specify the fields you want to populate
+    // });
 
     res.status(200).json({
       message:'upload success',
