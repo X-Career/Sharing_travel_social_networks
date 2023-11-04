@@ -309,6 +309,21 @@ const createPost = async (req, res) => {
   }
 }
 
+const searchUsers = async (req, res) => {
+    try {
+      const name = await req.query
+      const result = await UserModel.find(user => user.username.includes(name));
+      if (!result) {
+        return res.status(404).json('user not found')
+      }
+      res.status(200).json(result)
+    } catch (e) {
+      res.status(500).json({
+        msg: "Error server get users",
+        error: e,
+      });
+    }
+}
 
 module.exports = {
   createUser,
@@ -323,4 +338,5 @@ module.exports = {
   deleteUser,
   uploadAvatar,
   createPost,
+  searchUsers,
 };
