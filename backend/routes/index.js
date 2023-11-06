@@ -13,3 +13,4 @@ router.post("/auth/login", userController.login);
 router.post("/auth/register", userController.createUser);
 
 module.exports = router;
+
