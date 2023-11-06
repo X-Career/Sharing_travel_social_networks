@@ -168,7 +168,7 @@ const updatePassword = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    const { username } = req.body;
+    const {username}= req.body;
     const users = await UserModel.findMany({ username: { $regex: username } });
     if (!users) {
       return res.status(400).json("User not found");
@@ -308,7 +308,6 @@ const createPost = async (req, res) => {
     res.status(400).json('cannot create post')
   }
 }
-
 
 module.exports = {
   createUser,
