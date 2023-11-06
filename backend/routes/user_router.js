@@ -37,5 +37,4 @@ userRouter.patch(
   userController.updatePassword
 );
 
-userRouter.get('/search', userController.search)
 module.exports = userRouter;
