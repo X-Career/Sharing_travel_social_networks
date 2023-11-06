@@ -54,7 +54,7 @@ const login = async (req, res) => {
   try {
     const { username, password } = req.body;
     const user = await UserModel.login({ username, password });
-    console.log(user);
+    console.log('User Login', user);
     const dataToken = {
       _id: user._id,
       username: user.username,
@@ -73,6 +73,7 @@ const login = async (req, res) => {
       var refreshToken = randtoken.uid(256)
       refreshTokens[refreshToken] = username
       console.log('login success');
+      console.log('accessToken :', accessToken)
       res.status(201).json({
         accessToken: accessToken,
         // refreshToken: refreshToken,
@@ -116,7 +117,7 @@ const updateUser = async (req, res) => {
       req.body,
       { new: true }
     );
-    console.log(user);
+    console.log('User update: ', user);
     if(!user) {
       return res.status(400).json('User not found')
     }
