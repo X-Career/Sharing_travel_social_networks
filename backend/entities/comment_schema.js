@@ -2,13 +2,26 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 
 const CommentSchema = new Schema({
-    user: {
+    userId: {
         type: Schema.Types.ObjectId,
         ref: 'users'
     },
+    username: {
+        type: String
+    },
+    avatar: {
+        type: String
+    },
+    postId: {
+        type: Schema.Types.ObjectId,
+        ref: 'posts'
+    },
     content: {
         type: String
-    }
+    },
+    images: {
+        type: Array,
+      },
 })
 
 const Comment = mongoose.model('comments', CommentSchema)

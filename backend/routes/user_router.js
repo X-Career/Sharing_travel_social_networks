@@ -10,12 +10,16 @@ const {
 const userRouter = express.Router();
 
 userRouter.post("/upload", userController.uploadAvatar);
-userRouter.post("/comment", userController.createComment);
 userRouter.get("/current", userController.getCurrentUser);
 userRouter.get("/name", userController.getUser);
 userRouter.get("/users", userController.getUsers);
 userRouter.get("/posts", userController.getPosts);
 userRouter.delete("/delete", userController.deleteUser);
+userRouter.post(
+  "/post/:id/comment",
+  fileUploader.single("commentImages"),
+  userController.createComment
+  );
 userRouter.post(
   "/cloudinary-upload/avatar",
   fileUploader.single("avatar"),

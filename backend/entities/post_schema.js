@@ -21,6 +21,13 @@ const PostSchema = new Schema(
     images: {
       type: Array,
     },
+    react: {
+      type: Array
+    },
+    comments: [{
+      type: Schema.Types.ObjectId,
+      ref: 'comments'
+    }]
   },
   {
     timestamps: true, 
