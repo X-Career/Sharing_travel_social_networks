@@ -251,25 +251,6 @@ const uploadAvatar = async (req, res) => {
   }
 }
 
-const createComment = async (req, res) => {
-  try {
-    const userId = req.user._id
-    console.log('contenttt',req.body.content);
-    const comment = await CommentModel.create(
-      {
-        user: userId,
-        content: req.body.content
-      }
-    )
-    res.status(200).json({
-      message:'comment sucess',
-      comment: comment
-    })
-  } catch (error) {
-    res.status(400).json("Cannot create comment")
-  }
-}
-
 const createPost = async (req, res) => {
   try {
     const userId = req.user._id; 
@@ -288,18 +269,13 @@ const createPost = async (req, res) => {
     console.log('fileurl',fileUrls);
     const post = await PostModel.create(
       {
-        user: userId,
+        userId: userId,
         username: username,
         avatar: userAvatar,
         content: req.body.content,
         images: fileUrls,
       } 
     );
-
-    // const populatedPost = await PostModel.findOne({_id: userId}).populate(post, {
-    //   path: 'user',
-    //   select: 'username avatar', // Specify the fields you want to populate
-    // });
 
     res.status(200).json({
       message:'upload success',
@@ -309,6 +285,53 @@ const createPost = async (req, res) => {
     res.status(400).json('cannot create post')
   }
 }
+
+
+const createComment = async (req, res) => {
+  try {
+    const postId = req.params.id
+
+    const userId = req.user._id; 
+    const username = req.user.username; 
+    const userAvatar = req.user.avatar; 
+    // console.log(postId, userId, username, userAvatar, req.body.content);
+
+    // const fileUrls = []
+    // for (const file of req.files) {
+    //   fileUrls.push(file.path);
+    // }
+
+    const postRelated = await PostModel.findOne({ _id: postId });
+  
+    const comment = await CommentModel.create(
+      {
+        userId: userId,
+        username: username,
+        avatar: userAvatar,
+
+        content: req.body.content,
+        // images: fileUrls,
+
+        postId: postId
+      } 
+    );
+
+      console.log('cmt', comment[0]._id);
+
+    postRelated.comments.push(comment[0]._id)
+    await postRelated.save();
+    console.log('postRelated', postRelated);
+    res.status(200).json({
+      message:'upload success',
+      comment: comment
+    })
+  } catch (error) {
+    console.log('upload cmt fail');
+    res.status(400).json('cannot create comment')
+  }
+}
+
+
 
 module.exports = {
   createUser,
