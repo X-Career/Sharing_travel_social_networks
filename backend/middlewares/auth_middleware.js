@@ -8,6 +8,7 @@ const authMiddleware = (req, res, next) => {
         if (token) {
             const userData = jwt.verify(token, privateKey)
             console.log('userData ', userData);
+            console.log('token login: ', token);
             req.user = userData
             next()
         }

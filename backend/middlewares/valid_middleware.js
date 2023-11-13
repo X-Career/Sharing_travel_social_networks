@@ -32,7 +32,7 @@ const updateUserSchema = Joi.object({
     }, 'Birthday validation'),
     description: Joi.string()
       .max(500)
-      .regex(/^[a-zA-Z0-9\s]+$/),
+      .regex(/^[\/\d\\\p{Alphabetic}\p{Punctuation}\p{White_Space}]+$/u)
   }),
   query: Joi.object({}),
   params: Joi.object({}),
