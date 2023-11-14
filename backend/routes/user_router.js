@@ -15,6 +15,8 @@ userRouter.get("/name", userController.getUser);
 userRouter.get("/users", userController.getUsers);
 userRouter.get("/posts", userController.getPosts);
 userRouter.delete("/delete", userController.deleteUser);
+userRouter.get('/userPost', userController.getUserPost)
+
 userRouter.post(
   "/post/:id/comment",
   fileUploader.single("commentImages"),

@@ -9,9 +9,10 @@ const getPosts = async (req, res) => {
         const posts = await Post.find()
             .sort({createdAt: -1})
             .skip((page - 1) * limit)
-            .limit(limit);
+            .limit(limit)
+            .populate('comments');
         const total = await Post.countDocuments();
-        
+        console.log('posts with comment', posts);
         res.json({
             total,
             pages: Math.ceil(total / limit),
@@ -23,6 +24,8 @@ const getPosts = async (req, res) => {
     }
 
  }
+
+ 
 
  const search = async (req, res) => {
     try {

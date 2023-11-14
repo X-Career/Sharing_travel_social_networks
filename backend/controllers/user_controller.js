@@ -331,6 +331,23 @@ const createComment = async (req, res) => {
   }
 }
 
+const getUserPost = async (req, res) => {
+  const userId = req.user._id
+ console.log(userId);
+  try { 
+      const posts = await PostModel.findMany({user: userId}, 1, 20, { createdAt: -1 }, {}, 'comments')
+          
+      console.log('posts with comment', posts);
+      res.json({
+          posts
+      });
+  } catch (e) {
+      console.log('getPosts error: ',e)
+      res.status(500).json({e: 'Server error'})
+  }
+
+}
+
 
 
 module.exports = {
@@ -343,6 +360,7 @@ module.exports = {
   getUser,
   getUsers,
   getPosts,
+  getUserPost,
   deleteUser,
   uploadAvatar,
   createPost,
