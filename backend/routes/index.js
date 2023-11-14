@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.use("/user", authMiddleware, userRouter);
 router.use("/newsfeed",  postRouter);
-router.get('ping', (req,res) => {
+router.get('/ping', (req,res) => {
 res.send('pong')
 })
 
