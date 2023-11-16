@@ -14,17 +14,17 @@ const middlewareValidate = (schema) => {
   };
 };
 
-const currentYear = new Date().getFullYear();
 const updateUserSchema = Joi.object({
   body: Joi.object({
-    fullname: Joi.string().min(3).max(30),
-    gender: Joi.string().min(4).max(6),
+    avatar: Joi.string(),
+    fullname: Joi.string().max(30),
+    gender: Joi.string().max(6),
     birthday: Joi.string().custom((value, helpers) => {
+      const currentYear = new Date().getFullYear();
       const regex = new RegExp(
-        `^(0[1-9]|[12][09]|3[01])\\/(0[1-9]|1[012])\\/(19[0-9]{2}|20[0-${
-          currentYear.toString()[2]
-        }][0-9]{1}|${currentYear - 1})$`
+        `^((0[1-9]|[12][09|3[01])\\/(0[1-9]|1[012])\\/((19|20)[0-9]{2}|${currentYear}))$`
       );
+
       if (!regex.test(value)) {
         return helpers.error('any.invalid Birthday');
       }
@@ -32,7 +32,7 @@ const updateUserSchema = Joi.object({
     }, 'Birthday validation'),
     description: Joi.string()
       .max(500)
-      .regex(/^[\/\d\\\p{Alphabetic}\p{Punctuation}\p{White_Space}]+$/u)
+      .regex(/^[\/\d\\\p{Alphabetic}\p{Punctuation}\p{White_Space}]+$/u),
   }),
   query: Joi.object({}),
   params: Joi.object({}),
