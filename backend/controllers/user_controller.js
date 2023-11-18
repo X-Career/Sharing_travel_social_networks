@@ -98,12 +98,14 @@ const getCurrentUser = async (req, res) => {
   try {
     const user = await UserModel.findOne(
       { _id: req.user._id },
-      "_id username email"
-      );
+      "_id username email avatar fullname gender birthday description"
+    );
+    console.log('getCurrentUser: ', user)
       if (!user) {
         return res.status(400).json('User not found')
       }
       res.status(200).json(user);
+
     } catch (e) {
     res.status(500).json('Server error');
     }
